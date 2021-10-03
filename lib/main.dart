@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(
-          primarySwatch: Colors.green,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato'
-        ),
-        home: ProductsOverviewScreen(),
+            fontFamily: 'Lato',
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
+                .copyWith(secondary: Colors.deepOrange)),
+        home: const ProductsOverviewScreen(),
         routes: {
-          ProductDetailScreen.routeName: (context) => ProductDetailScreen()
+          ProductDetailScreen.routeName: (context) =>
+              const ProductDetailScreen()
         },
       ),
     );
