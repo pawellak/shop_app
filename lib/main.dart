@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => Cart())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'MyShop ',
         theme: ThemeData(
             fontFamily: 'Lato',
