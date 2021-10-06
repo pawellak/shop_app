@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => Cart())
       ],
       child: MaterialApp(
-        title: 'MyShop',
+        title: 'MyShop ',
         theme: ThemeData(
             fontFamily: 'Lato',
             colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
