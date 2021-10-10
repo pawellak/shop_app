@@ -10,7 +10,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context,listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -36,7 +36,10 @@ class ProductItem extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.shopping_cart),
             onPressed: () {
-              cart.addItem(product.id, product.price, product.title);
+              cart.addItem(
+                  productId: product.id,
+                  price: product.price,
+                  title: product.title);
             },
           ),
           title: Text(

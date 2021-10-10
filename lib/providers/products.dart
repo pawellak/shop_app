@@ -49,8 +49,8 @@ class Products extends ChangeNotifier {
     return _items.firstWhere((element) => element.id == id);
   }
 
-  void addProduct(Product product) {
-    _items.add(product);
-    notifyListeners();
-  }
+  // void addProduct(Product product) {
+  //   _items.add(product);
+  //   notifyListeners();
+  // }
 }

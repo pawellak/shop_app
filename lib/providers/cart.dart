@@ -42,13 +42,13 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void addItem(String productId, double price, String title) {
+  void addItem({required String productId,required double price,required String title}) {
     if (_items.containsKey(productId)) {
       _items.update(
           productId,
           (existingCardItem) => CartItem(
               id: existingCardItem.id,
-              title: existingCardItem.id,
+              title: existingCardItem.title,
               quantity: existingCardItem.quantity + 1,
               price: existingCardItem.price));
     } else {
