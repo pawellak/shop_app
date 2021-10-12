@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:nested/nested.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/providers/products.dart';
 import 'package:shop_app/screens/cart_screen.dart';
+import 'package:shop_app/screens/edit_product_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
 import 'package:shop_app/screens/products_overview_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/screens/user_products_screen.dart';
-import 'package:shop_app/widgets/user_product_item.dart';
 
 void main() => runApp(const MyApp());
 
@@ -18,43 +19,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (ctx) => Products()),
-        ChangeNotifierProvider(create: (ctx) => Cart()),
-        ChangeNotifierProvider(create: (ctx) => Orders())
-      ],
+      providers: providers(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'MyShop ',
-        theme: ThemeData(
-            fontFamily: 'Lato',
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
-                .copyWith(secondary: Colors.deepOrange)),
+        theme: buildThemeData(),
         home: const ProductsOverviewScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (context) =>
-              const ProductDetailScreen(),
-          CartScreen.routeName: (context) => const CartScreen(),
-          OrdersScreen.routeName: (context) => const OrdersScreen(),
-          UserProductsScreen.routeName:(context) => const UserProductsScreen(),
-        },
+        routes: routes(),
       ),
     );
   }
-}
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  List<SingleChildWidget> providers() {
+    return [
+      ChangeNotifierProvider(create: (ctx) => Products()),
+      ChangeNotifierProvider(create: (ctx) => Cart()),
+      ChangeNotifierProvider(create: (ctx) => Orders())
+    ];
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('MyShop'),
-      ),
-      body: const Center(
-        child: Text('Let\'s build a shop!'),
-      ),
-    );
+  ThemeData buildThemeData() {
+    return ThemeData(
+        fontFamily: 'Lato',
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
+            .copyWith(secondary: Colors.deepOrange));
+  }
+
+  Map<String, WidgetBuilder> routes() {
+    return {
+      ProductDetailScreen.routeName: (context) => const ProductDetailScreen(),
+      CartScreen.routeName: (context) => const CartScreen(),
+      OrdersScreen.routeName: (context) => const OrdersScreen(),
+      UserProductsScreen.routeName: (context) => const UserProductsScreen(),
+      EditProductScreen.routeName: (context) => const EditProductScreen(),
+    };
   }
 }
