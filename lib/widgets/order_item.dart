@@ -38,17 +38,18 @@ class _OrderItemState extends State<OrderItem> {
               )),
           if (_expanded)
             Container(
-              padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 height: min(widget.order.products.length * 20.0 + 15, 100),
                 child: ListView(
                   children: widget.order.products
                       .map((prod) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(prod.title),
                               Text(
                                 '${prod.quantity}x \$${prod.price}',
-                                style: const TextStyle(fontSize: 15,color: Colors.pink),
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.pink),
                               )
                             ],
                           ))

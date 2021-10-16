@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/products.dart';
 import 'package:validators/validators.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -18,6 +20,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _imageUrlFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+  var _isInit = false;
   var _editedProduct = Product(
       id: '',
       title: '',
@@ -33,6 +42,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (!_isInit) {
+      _isInit = true;
+      var productIdInit = ModalRoute.of(context)!.settings.arguments;
+      if (productIdInit != null) {
+        final product = Provider.of<Products>(context, listen: false)
+            .findById(productIdInit.toString());
+        _editedProduct = product;
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          'imageUrl': _imageUrlController.text = _editedProduct.imageUrl,
+        };
+      }
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _priceFocusNode.dispose();
@@ -43,7 +72,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void _updateImageUrl() {
-    if(!isURL(_imageUrlController.text.toString())) return;
+    if (!isURL(_imageUrlController.text.toString())) return;
     if (!_imageUrlFocusNode.hasFocus) {
       setState(() {});
     }
@@ -53,6 +82,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final isValid = _form.currentState!.validate();
     if (!isValid) return;
     _form.currentState!.save();
+
+    if (_editedProduct.id != '') {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -70,6 +108,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           key: _form,
           child: ListView(children: [
             TextFormField(
+                initialValue: _initValues['title'],
                 validator: (value) {
                   if (value == null) return 'Value is empty';
                   if (value.isEmpty) return 'Value is empty';
@@ -92,6 +131,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   }
                 }),
             TextFormField(
+              initialValue: _initValues['price'],
               validator: (value) {
                 if (value == null) return 'Value is empty';
                 if (value.isEmpty) return 'Value is empty';
@@ -122,6 +162,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               },
             ),
             TextFormField(
+                initialValue: _initValues['description'],
                 validator: (value) {
                   if (value == null) return 'Value is empty';
                   if (value.isEmpty) return 'Value is empty';
@@ -187,7 +228,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       }
                     },
                     onEditingComplete: () {
-                      if(!isURL(_imageUrlController.text.toString())) return;
+                      if (!isURL(_imageUrlController.text.toString())) return;
                       setState(() {});
                     },
                   ),

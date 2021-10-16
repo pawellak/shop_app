@@ -39,12 +39,11 @@ class Cart with ChangeNotifier {
             (value) => CartItem(
                 id: value.id,
                 title: value.title,
-                quantity: value.quantity-1,
+                quantity: value.quantity - 1,
                 price: value.price));
-      }else
-        {
-          _items.remove(productId);
-        }
+      } else {
+        _items.remove(productId);
+      }
     }
     notifyListeners();
   }

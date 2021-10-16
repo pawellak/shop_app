@@ -36,6 +36,7 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
           itemCount: productsData.items.length,
           itemBuilder: (_, i) {
             return UserProductItem(
+                id: productsData.items[i].id,
                 title: productsData.items[i].title,
                 imageUrl: productsData.items[i].imageUrl);
           },
