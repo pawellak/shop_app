@@ -5,16 +5,16 @@ import 'package:shop_app/screens/edit_product_screen.dart';
 import 'package:shop_app/widgets/app_drawer.dart';
 import 'package:shop_app/widgets/user_product_item.dart';
 
-class UserProductsScreen extends StatefulWidget {
+class UserProductsScreen extends StatelessWidget {
+
   static const routeName = '/user-product';
 
   const UserProductsScreen({Key? key}) : super(key: key);
 
-  @override
-  _UserProductsScreenState createState() => _UserProductsScreenState();
-}
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  }
 
-class _UserProductsScreenState extends State<UserProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
@@ -30,16 +30,19 @@ class _UserProductsScreenState extends State<UserProductsScreen> {
         ],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: productsData.items.length,
-          itemBuilder: (_, i) {
-            return UserProductItem(
-                id: productsData.items[i].id,
-                title: productsData.items[i].title,
-                imageUrl: productsData.items[i].imageUrl);
-          },
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: productsData.items.length,
+            itemBuilder: (_, i) {
+              return UserProductItem(
+                  id: productsData.items[i].id,
+                  title: productsData.items[i].title,
+                  imageUrl: productsData.items[i].imageUrl);
+            },
+          ),
         ),
       ),
     );
