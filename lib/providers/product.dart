@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop_app/models/http_exception.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -16,8 +20,32 @@ class Product with ChangeNotifier {
       required this.imageUrl,
       this.isFavorite = false});
 
-  void toggleFavouriteStatus() {
+  void setFavoriteValue(bool value) {
+    isFavorite = value;
+    notifyListeners();
+  }
+
+  void toggleFavouriteStatus() async {
+    bool? _isFavorite = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+
+    final url = Uri.https(
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json');
+
+    try {
+      final response =
+          await http.patch(url, body: json.encode({'isFavorite': isFavorite}));
+
+      if (response.statusCode >= 400) {
+        setFavoriteValue(_isFavorite);
+        throw HttpException('Could not toggle favorite status');
+      }
+    } catch (exception) {
+      setFavoriteValue(_isFavorite);
+      rethrow;
+    }
+
+    _isFavorite = null;
   }
 }

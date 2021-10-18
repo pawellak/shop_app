@@ -50,7 +50,8 @@ class Products extends ChangeNotifier {
         'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products.json');
     try {
       final response = await http.get(url);
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
+      if(extractedData==null) return;
       List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
@@ -92,8 +93,6 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> removeProduct(String id) async {
-
-
     final url = Uri.https(
         'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json');
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
@@ -110,4 +109,5 @@ class Products extends ChangeNotifier {
     }
     existingProduct = null;
   }
+
 }
