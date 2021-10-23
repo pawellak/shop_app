@@ -41,6 +41,7 @@ class Products extends ChangeNotifier {
             'description': product.description,
             'imageUrl': product.imageUrl,
             'price': product.price,
+            'creatorId': userId
           }));
 
       final newProduct = Product(
@@ -56,17 +57,24 @@ class Products extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetProducts() async {
-    var params = {
+  Future<void> fetchAndSetProducts({bool filterByUser = false}) async {
+    var _params = {
       'auth': authToken,
     };
+
+    if (filterByUser) {
+      _params = {
+        'auth': authToken,
+        'orderBy': json.encode("creatorId"),
+        'equalTo': json.encode(userId),
+      };
+    }
+
     var url = Uri.https(
       'udemy-shopapp-pl-default-rtdb.firebaseio.com',
       '/products.json',
-      params,
+      _params,
     );
-
-
 
     try {
       final response = await http.get(url);
@@ -75,7 +83,7 @@ class Products extends ChangeNotifier {
       List<Product> loadedProducts = [];
 
       url = Uri.https('udemy-shopapp-pl-default-rtdb.firebaseio.com',
-          '/userFavorites/$userId.json', params);
+          '/userFavorites/$userId.json', _params);
 
       final favoriteResponse = await http.get(url);
       final favoriteData = json.decode(favoriteResponse.body);
