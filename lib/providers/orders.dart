@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:http/http.dart' as http;
@@ -20,22 +19,29 @@ class OrderItem {
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
+  final String authToken;
+
+  Orders(this.authToken, this._orders);
+
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
+    var params = {
+      'auth': authToken,
+    };
+
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json');
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json', params);
 
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
 
+    final Map<String, dynamic>? extractedData =
+        json.decode(response.body) as Map<String, dynamic>?;
 
-    final Map<String, dynamic>? extractedData = json.decode(response.body) as Map<String, dynamic>?;
-
-
-    if(extractedData==null) return;
+    if (extractedData == null) return;
 
     extractedData.forEach((orderId, orderData) {
       loadedOrders.add(OrderItem(
@@ -50,13 +56,17 @@ class Orders with ChangeNotifier {
               .toList(),
           dataTime: DateTime.parse(orderData['dateTime'])));
     });
-    _orders=loadedOrders;
+    _orders = loadedOrders;
     notifyListeners();
   }
 
   Future<void> addOrders(List<CartItem> cartProducts, double total) async {
+    var params = {
+      'auth': authToken,
+    };
+
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json');
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json', params);
 
     final timeStamp = DateTime.now();
 

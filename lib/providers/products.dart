@@ -5,7 +5,10 @@ import 'package:shop_app/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products extends ChangeNotifier {
+  Products(this.authToken, this._items);
+
   List<Product> _items = [];
+  final String authToken;
 
   List<Product> get items {
     return [..._items];
@@ -20,9 +23,13 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
+    var params = {
+      'auth': authToken,
+    };
+
     try {
-      final url = Uri.https(
-          'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products.json');
+      final url = Uri.https('udemy-shopapp-pl-default-rtdb.firebaseio.com',
+          '/products.json', params);
       final response = await http.post(url,
           body: json.encode({
             'title': product.title,
@@ -46,12 +53,19 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
+    var params = {
+      'auth': authToken,
+    };
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products.json');
+      'udemy-shopapp-pl-default-rtdb.firebaseio.com',
+      '/products.json',
+      params,
+    );
+
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>?;
-      if(extractedData==null) return;
+      if (extractedData == null) return;
       List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
@@ -71,8 +85,12 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product product) async {
-    final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json');
+    var params = {
+      'auth': authToken,
+    };
+
+    final url = Uri.https('udemy-shopapp-pl-default-rtdb.firebaseio.com',
+        '/products/$id.json', params);
 
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     try {
@@ -93,8 +111,12 @@ class Products extends ChangeNotifier {
   }
 
   Future<void> removeProduct(String id) async {
-    final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json');
+    var params = {
+      'auth': authToken,
+    };
+
+    final url = Uri.https('udemy-shopapp-pl-default-rtdb.firebaseio.com',
+        '/products/$id.json', params);
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items.firstWhere((element) => element.id == id);
 
@@ -109,5 +131,4 @@ class Products extends ChangeNotifier {
     }
     existingProduct = null;
   }
-
 }

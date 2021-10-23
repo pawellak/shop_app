@@ -25,13 +25,16 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavouriteStatus() async {
+  void toggleFavouriteStatus(String authToken) async {
+    var params = {
+      'auth': authToken,
+    };
     bool? _isFavorite = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
 
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json');
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/products/$id.json',params);
 
     try {
       final response =
