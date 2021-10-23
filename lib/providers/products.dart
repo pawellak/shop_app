@@ -5,10 +5,15 @@ import 'package:shop_app/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products extends ChangeNotifier {
-  Products(this.authToken, this._items);
-
-  List<Product> _items = [];
   final String authToken;
+  final String userId;
+  List<Product> _items = [];
+
+  Products(
+    this.authToken,
+    this.userId,
+    this._items,
+  );
 
   List<Product> get items {
     return [..._items];
@@ -36,7 +41,6 @@ class Products extends ChangeNotifier {
             'description': product.description,
             'imageUrl': product.imageUrl,
             'price': product.price,
-            'isFavorite': product.isFavorite
           }));
 
       final newProduct = Product(
@@ -56,24 +60,34 @@ class Products extends ChangeNotifier {
     var params = {
       'auth': authToken,
     };
-    final url = Uri.https(
+    var url = Uri.https(
       'udemy-shopapp-pl-default-rtdb.firebaseio.com',
       '/products.json',
       params,
     );
+
+
 
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData == null) return;
       List<Product> loadedProducts = [];
-      extractedData.forEach((key, value) {
+
+      url = Uri.https('udemy-shopapp-pl-default-rtdb.firebaseio.com',
+          '/userFavorites/$userId.json', params);
+
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+
+      extractedData.forEach((prodId, value) {
         loadedProducts.add(Product(
-          id: key,
+          id: prodId,
           title: value['title'],
           description: value['description'],
           price: value['price'],
-          isFavorite: value['isFavorite'],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[prodId] ?? false,
           imageUrl: value['imageUrl'],
         ));
       });

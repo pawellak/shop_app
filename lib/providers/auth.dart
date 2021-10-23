@@ -5,11 +5,15 @@ import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
-  DateTime? _expiryDate=null;
+  DateTime? _expiryDate = null;
   late String _userId;
 
   bool get isAuth {
     return token != null;
+  }
+
+  String get userId {
+    return _userId;
   }
 
   String? get token {
@@ -20,8 +24,6 @@ class Auth with ChangeNotifier {
     }
     return null;
   }
-
-
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
