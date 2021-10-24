@@ -18,10 +18,10 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
-
   final String authToken;
+  final String userId;
 
-  Orders(this.authToken, this._orders);
+  Orders(this.authToken,this.userId, this._orders);
 
   List<OrderItem> get orders {
     return [..._orders];
@@ -33,7 +33,7 @@ class Orders with ChangeNotifier {
     };
 
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json', params);
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/$userId/orders.json', params);
 
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
@@ -66,7 +66,7 @@ class Orders with ChangeNotifier {
     };
 
     final url = Uri.https(
-        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/orders.json', params);
+        'udemy-shopapp-pl-default-rtdb.firebaseio.com', '/$userId/orders.json', params);
 
     final timeStamp = DateTime.now();
 

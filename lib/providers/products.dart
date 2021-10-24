@@ -5,7 +5,7 @@ import 'package:shop_app/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products extends ChangeNotifier {
-  final String authToken;
+  final String? authToken;
   final String userId;
   List<Product> _items = [];
 
