@@ -11,6 +11,7 @@ import 'package:shop_app/screens/orders_screen.dart';
 import 'package:shop_app/screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/screens/products_overview_screen.dart';
+import 'package:shop_app/screens/splash_screen.dart';
 import 'package:shop_app/screens/user_products_screen.dart';
 
 void main() => runApp(const MyApp());
@@ -29,7 +30,14 @@ class MyApp extends StatelessWidget {
                 theme: buildThemeData(),
                 home: auth.isAuth
                     ? const ProductsOverviewScreen()
-                    : const AuthScreen(),
+                    : FutureBuilder(
+                        future: auth.tryAutoLogin(),
+                        builder: (ctx, authResultSnapshot) =>
+                            authResultSnapshot.connectionState ==
+                                    ConnectionState.waiting
+                                ? const SplashScreen()
+                                : const AuthScreen(),
+                      ),
                 routes: routes(),
               )),
     );
