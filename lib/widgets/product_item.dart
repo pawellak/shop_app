@@ -17,15 +17,20 @@ class ProductItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
-                arguments: product.id);
-          },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
+            onTap: () {
+              Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                  arguments: product.id);
+            },
+            child: Hero(
+
+              tag: product.id,
+              child: FadeInImage(
+                placeholder:
+                    const AssetImage('assets/images/product-placeholder.png'),
+                image: NetworkImage(product.imageUrl),
+                fit: BoxFit.cover,
+              ),
+            )),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           leading: Consumer<Product>(
@@ -33,7 +38,7 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
-                product.toggleFavouriteStatus(auth.token!,auth.userId);
+                product.toggleFavouriteStatus(auth.token!, auth.userId);
               },
             ),
           ),

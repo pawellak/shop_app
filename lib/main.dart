@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
+import 'package:shop_app/helpers/custom_route.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/orders.dart';
@@ -56,8 +57,10 @@ class MyApp extends StatelessWidget {
       ChangeNotifierProvider(create: (ctx) => Cart()),
       ChangeNotifierProxyProvider<Auth, Orders>(
         create: (_) => Orders('', '', []),
-        update: (ctx, auth, previousProducts) =>
-            Orders(auth.token!, auth.userId, previousProducts!.orders),
+        update: (ctx, auth, previousProducts) {
+          if (auth.token == null) return Orders('', '', []);
+          return Orders(auth.token!, auth.userId, previousProducts!.orders);
+        },
       )
     ];
   }
@@ -65,6 +68,8 @@ class MyApp extends StatelessWidget {
   ThemeData buildThemeData() {
     return ThemeData(
         fontFamily: 'Lato',
+        pageTransitionsTheme: PageTransitionsTheme(
+            builders: {TargetPlatform.android: CustomPageTransitionBuilder()}),
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green)
             .copyWith(secondary: Colors.deepOrange));
   }
